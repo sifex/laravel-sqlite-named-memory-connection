@@ -14,10 +14,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Laravel 5.5 - 5.8
-          - laravel: '5.5.*'
-            php: '7.2'
-            phpunit: '^7.0'
           - laravel: '5.8.*'
             php: '7.4'
             phpunit: '^8.0'

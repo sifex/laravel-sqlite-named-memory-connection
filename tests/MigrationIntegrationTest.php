@@ -146,4 +146,36 @@ class MigrationIntegrationTest extends TestCase
         $hasTables = $this->capsule->connection('different')->getSchemaBuilder()->hasTable('users');
         $this->assertFalse($hasTables);
     }
+
+    public function testDropAllTablesCallsGrammarMethods()
+    {
+        $schema = $this->capsule->schema();
+
+        // Create multiple tables to test drop all functionality
+        $schema->create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+        });
+
+        $schema->create('posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('title');
+        });
+
+        // Verify tables exist
+        $this->assertTrue($schema->hasTable('users'));
+        $this->assertTrue($schema->hasTable('posts'));
+
+        // This will call dropAllTables() which internally calls:
+        // - $this->grammar->compileEnableWriteableSchema()
+        // - $this->grammar->compileDropAllTables()
+        // - $this->grammar->compileDisableWriteableSchema()
+        // - $this->grammar->compileRebuild()
+        // These methods were removed in Laravel 12, so this test will fail
+        $schema->dropAllTables();
+
+        // Verify all tables were dropped
+        $this->assertFalse($schema->hasTable('users'));
+        $this->assertFalse($schema->hasTable('posts'));
+    }
 }
