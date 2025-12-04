@@ -2,3 +2,5 @@
 composer.lock
 vendor
 *.iml
+/.phpunit.result.cache
+/.claude/settings.local.json
