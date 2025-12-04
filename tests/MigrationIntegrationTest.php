@@ -46,8 +46,13 @@ class MigrationIntegrationTest extends TestCase
 
     protected function tearDown(): void
     {
-        if ($this->capsule->getConnection()->getSchemaBuilder()->hasTable('users')) {
-            $this->capsule->schema()->drop('users');
+        $schema = $this->capsule->getConnection()->getSchemaBuilder();
+
+        // Clean up any tables that might exist
+        foreach (['users', 'posts'] as $table) {
+            if ($schema->hasTable($table)) {
+                $this->capsule->schema()->drop($table);
+            }
         }
 
         parent::tearDown();
